@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Reseña para Adrián Garza-Delgado</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+  :root{
+    --white:#FFFFFF;
+    --black:#000000;
+    --gray-mid:#4D4D4D;
+    --gray-main:#828282;
+    --gray-light:#CCCCCC;
+    --gray-bg:#F2F2F2;
+    --red:#CE011F;
+    --red-deep:#A30119;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:var(--gray-bg);
+    font-family:'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color:var(--black);
+    display:flex;
+    justify-content:center;
+    min-height:100vh;
+  }
+  .app{
+    width:100%;
+    max-width:520px;
+    display:flex;
+    flex-direction:column;
+    min-height:100vh;
+    background:var(--white);
+    border-top:3px solid var(--red);
+    box-shadow:0 0 60px rgba(0,0,0,0.06);
+  }
+
+  /* Header */
+  .header{
+    padding:28px 24px 20px;
+    border-bottom:1px solid var(--gray-light);
+    position:relative;
+  }
+  .headline{
+    font-weight:700;
+    font-size:24px;
+    line-height:1.25;
+    margin:0 0 6px;
+    position:relative;
+    color:var(--black);
+  }
+  .subline{
+    font-size:14px;
+    color:var(--gray-mid);
+    line-height:1.5;
+    position:relative;
+    max-width:420px;
+  }
+  .lang-toggle{
+    position:absolute;
+    top:20px; right:20px;
+    display:flex;
+    background:var(--white);
+    border:1px solid var(--gray-light);
+    border-radius:14px;
+    padding:3px;
+    gap:2px;
+    z-index:2;
+  }
+  .lang-toggle button{
+    border:none;
+    background:transparent;
+    color:var(--gray-mid);
+    font-family:inherit;
+    font-size:11.5px;
+    font-weight:600;
+    padding:5px 11px;
+    border-radius:11px;
+    cursor:pointer;
+    transition:background 0.15s ease, color 0.15s ease;
+  }
+  .lang-toggle button.active{
+    background:var(--red);
+    color:#fff;
+  }
+
+  /* Chat */
+  .chat{
+    flex:1;
+    overflow-y:auto;
+    padding:20px 20px 8px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .msg{
+    max-width:86%;
+    padding:13px 16px;
+    border-radius:16px;
+    font-size:15px;
+    line-height:1.55;
+    white-space:pre-wrap;
+    word-wrap:break-word;
+  }
+  .msg a{ color:inherit; text-decoration:underline; font-weight:600; }
+  .msg.assistant{
+    align-self:flex-start;
+    background:var(--gray-bg);
+    color:var(--black);
+    border-bottom-left-radius:4px;
+  }
+  .msg.user{
+    align-self:flex-end;
+    background:var(--red);
+    color:#fff;
+    border-bottom-right-radius:4px;
+  }
+  .msg.system-note{
+    align-self:center;
+    background:transparent;
+    color:var(--gray-mid);
+    font-size:12px;
+    text-align:center;
+    max-width:100%;
+  }
+
+  .typing{
+    align-self:flex-start;
+    display:flex;
+    gap:5px;
+    padding:14px 16px;
+    background:var(--gray-bg);
+    border-radius:16px;
+    border-bottom-left-radius:4px;
+  }
+  .typing span{
+    width:6px;height:6px;border-radius:50%;
+    background:var(--gray-main);
+    opacity:0.6;
+    animation:bounce 1.2s infinite;
+  }
+  .typing span:nth-child(2){animation-delay:0.15s;}
+  .typing span:nth-child(3){animation-delay:0.3s;}
+  @keyframes bounce{
+    0%,60%,100%{transform:translateY(0); opacity:0.4;}
+    30%{transform:translateY(-4px); opacity:1;}
+  }
+
+  /* Input bar */
+  .inputbar{
+    border-top:1px solid var(--gray-light);
+    padding:14px 16px calc(16px + env(safe-area-inset-bottom));
+    background:var(--white);
+  }
+  .input-row{
+    display:flex;
+    align-items:flex-end;
+    gap:8px;
+    background:var(--gray-bg);
+    border:1px solid var(--gray-light);
+    border-radius:20px;
+    padding:8px 8px 8px 16px;
+  }
+  textarea{
+    flex:1;
+    border:none;
+    background:transparent;
+    resize:none;
+    font-family:inherit;
+    font-size:15px;
+    line-height:1.4;
+    color:var(--black);
+    max-height:120px;
+    padding:6px 0;
+    outline:none;
+  }
+  textarea::placeholder{ color:var(--gray-main); }
+  .send-btn{
+    flex-shrink:0;
+    width:38px;height:38px;
+    border-radius:50%;
+    border:none;
+    background:var(--red);
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transition:transform 0.12s ease, background 0.15s ease;
+  }
+  .send-btn:active{ transform:scale(0.92); }
+  .send-btn:disabled{ background:var(--gray-light); cursor:default; }
+  .mic-hint{
+    font-size:11.5px;
+    color:var(--gray-mid);
+    text-align:center;
+    margin-top:9px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:5px;
+  }
+
+  /* Mic button */
+  .mic-btn{
+    flex-shrink:0;
+    width:38px;height:38px;
+    border-radius:50%;
+    border:none;
+    background:var(--gray-bg);
+    color:var(--gray-main);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    transition:transform 0.12s ease, background 0.15s ease, color 0.15s ease;
+  }
+  .mic-btn:active{ transform:scale(0.92); }
+  .mic-btn.recording{
+    background:var(--red);
+    color:#fff;
+    animation:pulse-ring 1.4s infinite;
+  }
+  @keyframes pulse-ring{
+    0%{ box-shadow:0 0 0 0 rgba(206,1,31,0.35); }
+    70%{ box-shadow:0 0 0 10px rgba(206,1,31,0); }
+    100%{ box-shadow:0 0 0 0 rgba(206,1,31,0); }
+  }
+
+  /* Quick-start chips */
+  .quick-start{
+    align-self:flex-start;
+    max-width:100%;
+    width:100%;
+    background:var(--gray-bg);
+    border:1px solid var(--gray-light);
+    border-radius:16px;
+    padding:16px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .qs-group-label{
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--gray-mid);
+    font-weight:600;
+    margin-bottom:8px;
+    display:block;
+  }
+  .chip-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+  }
+  .chip{
+    border:1.5px solid var(--gray-light);
+    background:#fff;
+    color:var(--black);
+    padding:9px 15px;
+    border-radius:20px;
+    font-size:13.5px;
+    font-weight:500;
+    cursor:pointer;
+    transition:all 0.15s ease;
+    font-family:inherit;
+  }
+  .chip:hover{ border-color:var(--red); }
+  .chip.selected{
+    background:var(--red);
+    border-color:var(--red);
+    color:#fff;
+  }
+  .qs-continue{
+    align-self:flex-end;
+    background:var(--red);
+    color:#fff;
+    border:none;
+    padding:10px 20px;
+    border-radius:18px;
+    font-size:13.5px;
+    font-weight:600;
+    font-family:inherit;
+    cursor:pointer;
+    opacity:0.4;
+    pointer-events:none;
+    transition:opacity 0.15s ease;
+  }
+  .qs-continue.enabled{
+    opacity:1;
+    pointer-events:auto;
+  }
+  .qs-continue:active{ transform:scale(0.97); }
+
+  /* Draft-ready action bar */
+  .draft-bar{
+    background:var(--gray-bg);
+    border-top:1px solid var(--gray-light);
+    padding:14px 18px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:10px;
+    animation:slideUp 0.25s ease;
+  }
+  @keyframes slideUp{
+    from{ opacity:0; transform:translateY(8px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  .draft-bar-label{
+    font-size:13px;
+    font-weight:600;
+    color:var(--black);
+  }
+  .draft-bar-actions{
+    display:flex;
+    gap:8px;
+  }
+  .draft-btn{
+    border:none;
+    border-radius:16px;
+    padding:9px 16px;
+    font-size:13px;
+    font-weight:600;
+    font-family:inherit;
+    cursor:pointer;
+    transition:transform 0.12s ease, background 0.15s ease;
+  }
+  .draft-btn:active{ transform:scale(0.96); }
+  .draft-btn-copy{
+    background:#fff;
+    color:var(--black);
+    border:1.5px solid var(--gray-main);
+  }
+  .draft-btn-copy.copied{
+    background:var(--black);
+    color:#fff;
+    border-color:var(--black);
+  }
+  .draft-btn-go{
+    background:var(--red);
+    color:#fff;
+  }
+
+  .footer-credit{
+    text-align:center;
+    font-size:10.5px;
+    color:var(--gray-main);
+    padding-bottom:10px;
+    letter-spacing:0.02em;
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <div class="header">
+    <div class="lang-toggle">
+      <button data-lang="es" class="active">ES</button>
+      <button data-lang="en">EN</button>
+    </div>
+    <div class="headline" id="headlineText">Asistente para escribir tu review</div>
+    <div class="subline" id="sublineText">Cuéntame cómo fue trabajar con Adrián Garza-Delgado y te ayudo a poner tu experiencia en palabras claras. Al final, tú decides qué se publica.</div>
+  </div>
+
+  <div class="chat" id="chat"></div>
+
+  <div class="draft-bar" id="draftBar" style="display:none;">
+    <span class="draft-bar-label" id="draftLabelText">✓ Tu reseña está lista</span>
+    <div class="draft-bar-actions">
+      <button class="draft-btn draft-btn-copy" id="copyDraftBtn">Copiar reseña</button>
+      <button class="draft-btn draft-btn-go" id="goReviewBtn">Ir a publicarla →</button>
+    </div>
+  </div>
+
+  <div class="inputbar">
+    <div class="input-row">
+      <textarea id="input" rows="1" placeholder="Escribe aquí…"></textarea>
+      <button class="mic-btn" id="micBtn" aria-label="Dictar" style="display:none;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/>
+        </svg>
+      </button>
+      <button class="send-btn" id="sendBtn" aria-label="Enviar">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <path d="M4 12L20 4L14 20L11 13L4 12Z" fill="currentColor"/>
+        </svg>
+      </button>
+    </div>
+    <div class="mic-hint" id="micHint">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg>
+      <span id="micHintText">Toca el micrófono y dicta — es más rápido</span>
+    </div>
+  </div>
+  <div class="footer-credit" id="footerText">Tus palabras, tu reseña — tú das clic en publicar</div>
+</div>
+
+<script>
+const AGENT_NAME = "Adrián Garza-Delgado";
+const AGENT_ROLE = "Broker Asociado";
+const AREAS_SERVED = "San Antonio y Bexar, Comal, Kendall y Guadalupe — incluyendo zonas como Stone Oak, The Dominion y Shavano Park";
+const REVIEW_LINK = "https://g.page/r/CRFPyL94TQSzEBM/review";
+const ZONE_NAMES = ["San Antonio", "Stone Oak", "The Dominion", "Shavano Park"];
+
+const T = {
+  es: {
+    headline: "Asistente para escribir tu review",
+    subline: "Cuéntame cómo fue trabajar con Adrián Garza-Delgado y te ayudo a poner tu experiencia en palabras claras. Al final, tú decides qué se publica.",
+    inputPlaceholder: "Escribe aquí…",
+    micHint: "Toca el micrófono y dicta — es más rápido",
+    qsTypeLabel: "¿Qué hiciste con Adrián?",
+    qsZoneLabel: "¿En qué zona? (opcional)",
+    qsContinue: "Continuar →",
+    types: { compre: "Compré", vende: "Vendí", rento: "Renté", admin: "Administración", otro: "Otro" },
+    composeType: { compre: "Compré una propiedad", vende: "Vendí mi propiedad", rento: "Renté una propiedad", admin: "Uso el servicio de administración de propiedades" },
+    connector: "en",
+    zoneOther: "Otra zona",
+    otherPlaceholder: "Cuéntame quién eres y cómo conociste a Adrián…",
+    zoneOtherPlaceholder: "Escribe la zona…",
+    draftLabel: "✓ Tu reseña está lista",
+    copyBtn: "Copiar reseña",
+    copiedBtn: "¡Copiada!",
+    goBtn: "Ir a publicarla →",
+    footer: "Tus palabras, tu reseña — tú das clic en publicar",
+    greeting: `¡Hola! Soy un asistente que ayuda a los clientes de ${AGENT_NAME} a escribir su reseña de Google — en tus propias palabras, no las mías.\n\nToma como 2 minutos. Empecemos con lo rápido — toca las opciones de abajo, o si prefieres, dicta con el micrófono y cuéntame todo de un jalón.`,
+    errorTech: "Perdón, hubo un problema técnico. ¿Puedes intentar de nuevo?",
+    errorConn: "Perdón, hubo un problema de conexión. ¿Puedes intentar mandar tu mensaje otra vez?",
+    switchNote: "Cambiaste a español — seguimos desde aquí.",
+    recogLang: "es-MX",
+    htmlLang: "es"
+  },
+  en: {
+    headline: "Review-writing assistant",
+    subline: "Tell me about your experience working with Adrián Garza-Delgado, and I'll help you put it into clear words. In the end, you decide what gets posted.",
+    inputPlaceholder: "Type here…",
+    micHint: "Tap the mic and dictate — it's faster",
+    qsTypeLabel: "What did you do with Adrián?",
+    qsZoneLabel: "Which area? (optional)",
+    qsContinue: "Continue →",
+    types: { compre: "Bought", vende: "Sold", rento: "Rented", admin: "Property Mgmt", otro: "Other" },
+    composeType: { compre: "I bought a property", vende: "I sold my property", rento: "I rented a property", admin: "I use his property management service" },
+    connector: "in",
+    zoneOther: "Other area",
+    otherPlaceholder: "Tell me who you are and how you know Adrián…",
+    zoneOtherPlaceholder: "Type the area…",
+    draftLabel: "✓ Your review is ready",
+    copyBtn: "Copy review",
+    copiedBtn: "Copied!",
+    goBtn: "Go post it →",
+    footer: "Your words, your review — you click publish",
+    greeting: `Hi! I'm an assistant that helps ${AGENT_NAME}'s clients write their Google review — in your own words, not mine.\n\nTakes about 2 minutes. Let's start with the quick stuff — tap an option below, or if you'd rather, use the mic and just tell me the whole thing in one go.`,
+    errorTech: "Sorry, something went wrong on my end. Can you try again?",
+    errorConn: "Sorry, there was a connection issue. Can you try sending that again?",
+    switchNote: "Switched to English — picking up from here.",
+    recogLang: "en-US",
+    htmlLang: "en"
+  }
+};
+
+let LANG = 'es';
+
+function buildSystemPrompt(lang, otherPath){
+  const langLine = lang === 'es'
+    ? `LANGUAGE: The interface is currently set to Spanish, so default to natural, warm Mexican Spanish (uses "tú", contractions where natural, no anglicisms). If the client clearly writes in English instead, follow their lead for that reply. Never mix languages within a single message unless the client did first.`
+    : `LANGUAGE: The interface is currently set to English, so default to natural, conversational English. If the client clearly writes in Spanish instead, follow their lead for that reply, responding in natural, warm Mexican Spanish. Never mix languages within a single message unless the client did first.`;
+
+  const otherPathLine = otherPath ? `
+
+CONTEXT: This reviewer already told the interface their relationship with ${AGENT_NAME} was NOT a standard property purchase, sale, or rental — they could be a referral partner (lender, title company, another agent) or a friend/colleague who was helped in some other way. Do NOT ask "¿compraste, vendiste o rentaste?" or any variant of that question — that script does not apply here. Instead, ask open questions about who they are, how they know ${AGENT_NAME}, and what he actually did that stood out.` : '';
+
+  return `You are helping someone with a genuine, real relationship to ${AGENT_NAME} write their own Google review of their honest experience. This is most often a past buying/selling/renting client, but can also be a landlord using his property management services, a referral partner (lender, title company, another agent), or a friend/colleague who genuinely worked with or was helped by ${AGENT_NAME} — treat all of these as legitimate as long as the relationship is real. ${AGENT_NAME} is a ${AGENT_ROLE} serving ${AREAS_SERVED}, and when the client is ready to post, their review goes here: ${REVIEW_LINK}. You are talking to the REVIEWER, not the agent. Your job is to turn their real experience into clear, specific words, then hand them a draft they own, can edit, and post themselves. You are an articulation aid — never a script. Always refer to the agent by name when you speak with them.
+
+${langLine}
+${otherPathLine}
+
+BRAND: Never mention Keller Williams, any brokerage name, or any company affiliation anywhere — refer to ${AGENT_NAME} only by name and as "Broker Asociado" / "Broker Associate."
+
+HARD RULES (non-negotiable — apply to every interaction)
+1. Genuine experience only. If the person indicates they never worked with the agent, or asks you to invent a review, politely decline and stop.
+2. Never invent or embellish. Every specific detail in the draft must come from something the client actually told you. No added facts, no inflated claims.
+3. Never script their words or seed keywords. Don't tell the client what to say, and don't plant phrases the agent "wants." Reflect what the client says — don't direct it. (Google's 2026 review policy prohibits businesses from influencing the wording of a review.)
+4. Don't supply superlatives — draw them out instead. Never put words like "top," "best," or "#1" into the review yourself, and never ask a leading question that hands the client the word ("Were they the best?"). Do the opposite: ask open, evaluative questions that give a genuinely happy client room to reach for those words on their own. If they say it, keep it word-for-word and lead with it. If they don't, leave it out.
+5. No incentives, no rating coaching. Never mention discounts, gifts, or rewards. Never tell the client what star rating to leave.
+6. Stay clean. No private or financial details (full street address, sale price, other people's names), and nothing negative about other agents, companies, or third parties.
+7. Every draft must be unique and human. Vary length, structure, and wording across clients. Never produce a template.
+8. Honest reviews are welcome. If the client's experience was mixed or negative, help them write their honest review. Never pressure positivity, and never refuse to help because the feedback isn't glowing.
+
+HOW TO TALK TO THE CLIENT
+- Warm, brief, casual — like a helpful friend. They're doing the agent a favor, so respect their time. Aim to wrap in about 2-3 minutes.
+- Ask in grouped, open, story-style prompts, one at a time — never a long list. It should feel like a conversation, never a form or an interrogation.
+
+WHAT TO LISTEN FOR (the Nouns / Verbs / Modifiers lens)
+You are not extracting keywords to insert. You are listening for the real specifics in their story so the review is concrete instead of generic (like "my agent was great to work with"). Across the conversation, naturally capture whatever they actually share:
+- Nouns — who they worked with; the kind of property (historic home, condo, waterfront, first place); the area or neighborhood; their situation (first-time buyer, relocating, downsizing, investor).
+- Verbs — what happened (bought, sold, listed, leased, relocated, upgraded).
+- Modifiers — their genuine feelings and what stood out, in their own words. If the client volunteers a superlative or strong praise — "best," "top," "incredible," "above and beyond" — keep it verbatim and lead the draft with it. It's theirs. Never supply such a word yourself, and never ask a yes/no that puts it in their mouth.
+If a detail doesn't come up naturally, let it go. A shorter genuine review beats a padded one.
+
+THE CONVERSATION (about 2-3 grouped prompts, or one voice dump)
+If the client dumps their whole story in one message, work with that directly instead of re-asking things they already covered.
+Otherwise, ask in small groups, one at a time, and stop early once you have enough:
+1. The move — "Quick version: were you buying, selling, or renting, and what kind of place / what area?"
+2. The experience — "What was going on for you at the time, and how did they help? Anything that stood out — a tricky moment they got you through, something they did really well?"
+3. The bottom line (this is where strong words surface) — invite the client to reach for their best, most evaluative language with open questions like:
+   - "When you think back on the whole thing, how would you describe them in your own words?"
+   - "If a friend asked why they should work with your agent instead of anyone else, what would you tell them?"
+   - "What's the one thing that stood out most about working with them?"
+   These give a thrilled client the room to say "they were the best" or "went above and beyond" on their own. Capture those exact words and feature them. If the client's sentiment is more measured, reflect that honestly — don't push for more than they feel.
+
+WRITING THE DRAFT
+- Write in the client's own voice and tone — first person, past tense. If they were casual, keep it casual.
+- Weave in only the real specifics they gave — the agent's name, what they did, the property type, the area, and what stood out — the way a person actually talks. No keyword stuffing, no marketing-speak.
+- Lead with the client's strongest genuine words. If they volunteered a superlative, open or anchor the review on it.
+- Use the agent's accurate trade term only where it genuinely fits their story — don't force "luxury listing agent" onto a starter-home sale.
+- Length: match what they gave you — usually 3-6 sentences. Detailed enough to be specific and helpful, short enough to read as real. Never pad.
+- Present the review draft wrapped in the exact markers <<<DRAFT>>> and <<<END_DRAFT>>>, each on its own line, with nothing but the finished review text between them — no quotation marks, no labels, no extra commentary inside the markers. Outside the markers, in your own words, let the client know the draft is ready, invite them to tweak anything that doesn't sound like them, and mention that the button below the chat will let them copy it and go post it. Do NOT paste the raw Google review link yourself and do NOT tell them to copy-paste manually — the interface already handles both with a button.
+- If the client asks for changes after seeing a draft, revise it and present the updated version the same way, wrapped in fresh <<<DRAFT>>> / <<<END_DRAFT>>> markers.
+- Optional photo nudge: if they mention they have a photo (their new home, the sign in the yard), suggest adding it — reviews with a photo stand out and carry more weight. Never required.
+- Remind them to post from their own Google account, in their own words.
+
+DON'TS (quick reference)
+- Don't fabricate, embellish, or add any detail the client didn't say.
+- Don't supply or lead toward "top / best / #1" — only keep superlatives the client volunteers.
+- Don't seed keywords or coach name-drops.
+- Don't tell them what rating to give, and don't mention any incentive.
+- Don't write a long, over-polished, or template-like review.
+- Don't include private or financial info, or say anything negative about third parties.
+- Don't pressure positivity, and don't refuse a mixed or honest review.
+- Don't claim awards, rankings, or credentials the client didn't mention.`;
+}
+
+let history = []; // {role, content}
+let otherPath = false;
+
+const chatEl = document.getElementById('chat');
+const inputEl = document.getElementById('input');
+const sendBtn = document.getElementById('sendBtn');
+const headlineEl = document.getElementById('headlineText');
+const sublineEl = document.getElementById('sublineText');
+const footerEl = document.getElementById('footerText');
+const micHintText = document.getElementById('micHintText');
+const htmlEl = document.documentElement;
+
+function addMessage(role, text){
+  const div = document.createElement('div');
+  div.className = 'msg ' + role;
+  div.innerHTML = linkify(text);
+  chatEl.appendChild(div);
+  chatEl.scrollTop = chatEl.scrollHeight;
+}
+
+function linkify(text){
+  const escaped = text
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  return escaped.replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener">$1</a>');
+}
+
+function showTyping(){
+  const div = document.createElement('div');
+  div.className = 'typing';
+  div.id = 'typingIndicator';
+  div.innerHTML = '<span></span><span></span><span></span>';
+  chatEl.appendChild(div);
+  chatEl.scrollTop = chatEl.scrollHeight;
+}
+function hideTyping(){
+  const el = document.getElementById('typingIndicator');
+  if(el) el.remove();
+}
+
+let latestDraft = null;
+const draftBar = document.getElementById('draftBar');
+const draftLabelEl = document.getElementById('draftLabelText');
+const copyDraftBtn = document.getElementById('copyDraftBtn');
+const goReviewBtn = document.getElementById('goReviewBtn');
+
+function extractDraft(text){
+  const match = text.match(/<<<DRAFT>>>([\s\S]*?)<<<END_DRAFT>>>/);
+  if(!match) return null;
+  return match[1].trim();
+}
+
+function stripMarkers(text){
+  return text.replace(/<<<DRAFT>>>/g, '').replace(/<<<END_DRAFT>>>/g, '').trim();
+}
+
+copyDraftBtn.addEventListener('click', async () => {
+  if(!latestDraft) return;
+  try{
+    await navigator.clipboard.writeText(latestDraft);
+  }catch(e){
+    const ta = document.createElement('textarea');
+    ta.value = latestDraft;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  }
+  copyDraftBtn.textContent = T[LANG].copiedBtn;
+  copyDraftBtn.classList.add('copied');
+  setTimeout(() => {
+    copyDraftBtn.textContent = T[LANG].copyBtn;
+    copyDraftBtn.classList.remove('copied');
+  }, 2000);
+});
+
+goReviewBtn.addEventListener('click', () => {
+  window.open(REVIEW_LINK, '_blank', 'noopener');
+});
+
+async function callClaude(){
+  showTyping();
+  sendBtn.disabled = true;
+  try{
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        system: buildSystemPrompt(LANG, otherPath),
+        messages: history
+      })
+    });
+    const data = await response.json();
+    hideTyping();
+    const textBlocks = (data.content || []).filter(b => b.type === "text").map(b => b.text);
+    const rawReply = textBlocks.join("\n") || T[LANG].errorTech;
+    history.push({ role: "assistant", content: rawReply });
+
+    const draft = extractDraft(rawReply);
+    if(draft){
+      latestDraft = draft;
+      draftBar.style.display = 'flex';
+      copyDraftBtn.textContent = T[LANG].copyBtn;
+      copyDraftBtn.classList.remove('copied');
+    }
+    addMessage('assistant', stripMarkers(rawReply));
+  }catch(err){
+    hideTyping();
+    addMessage('assistant', T[LANG].errorConn);
+  }finally{
+    sendBtn.disabled = false;
+  }
+}
+
+function sendUserMessage(){
+  const text = inputEl.value.trim();
+  if(!text) return;
+  history.push({ role: "user", content: text });
+  addMessage('user', text);
+  inputEl.value = '';
+  inputEl.style.height = 'auto';
+  callClaude();
+}
+
+sendBtn.addEventListener('click', sendUserMessage);
+inputEl.addEventListener('keydown', (e) => {
+  if(e.key === 'Enter' && !e.shiftKey){
+    e.preventDefault();
+    sendUserMessage();
+  }
+});
+inputEl.addEventListener('input', () => {
+  inputEl.style.height = 'auto';
+  inputEl.style.height = Math.min(inputEl.scrollHeight, 120) + 'px';
+});
+
+// ---- Quick-start chips ----
+let selectedType = null;
+let selectedZone = null;
+let quickStartActive = false;
+
+function renderQuickStart(){
+  quickStartActive = true;
+  const t = T[LANG];
+  const panel = document.createElement('div');
+  panel.className = 'quick-start';
+  panel.id = 'quickStart';
+
+  const typeLabel = document.createElement('span');
+  typeLabel.className = 'qs-group-label';
+  typeLabel.textContent = t.qsTypeLabel;
+  panel.appendChild(typeLabel);
+
+  const typeRow = document.createElement('div');
+  typeRow.className = 'chip-row';
+  const typeEntries = [
+    { key: 'compre', label: t.types.compre },
+    { key: 'vende', label: t.types.vende },
+    { key: 'rento', label: t.types.rento },
+    { key: 'admin', label: t.types.admin },
+    { key: 'otro', label: t.types.otro, other: true }
+  ];
+  typeEntries.forEach(pt => {
+    const btn = document.createElement('button');
+    btn.className = 'chip';
+    btn.textContent = pt.label;
+    btn.addEventListener('click', () => {
+      if(pt.other){
+        otherPath = true;
+        panel.remove();
+        quickStartActive = false;
+        inputEl.placeholder = t.otherPlaceholder;
+        inputEl.focus();
+        return;
+      }
+      selectedType = t.composeType[pt.key];
+      [...typeRow.children].forEach(c => c.classList.remove('selected'));
+      btn.classList.add('selected');
+      updateContinueState();
+    });
+    typeRow.appendChild(btn);
+  });
+  panel.appendChild(typeRow);
+
+  const zoneLabel = document.createElement('span');
+  zoneLabel.className = 'qs-group-label';
+  zoneLabel.textContent = t.qsZoneLabel;
+  panel.appendChild(zoneLabel);
+
+  const zoneRow = document.createElement('div');
+  zoneRow.className = 'chip-row';
+  const zoneOptions = [...ZONE_NAMES, t.zoneOther];
+  zoneOptions.forEach(z => {
+    const btn = document.createElement('button');
+    btn.className = 'chip';
+    btn.textContent = z;
+    btn.addEventListener('click', () => {
+      if(z === t.zoneOther){
+        [...zoneRow.children].forEach(c => c.classList.remove('selected'));
+        selectedZone = null;
+        panel.remove();
+        quickStartActive = false;
+        inputEl.placeholder = t.zoneOtherPlaceholder;
+        inputEl.focus();
+        return;
+      }
+      selectedZone = z;
+      [...zoneRow.children].forEach(c => c.classList.remove('selected'));
+      btn.classList.add('selected');
+      updateContinueState();
+    });
+    zoneRow.appendChild(btn);
+  });
+  panel.appendChild(zoneRow);
+
+  const continueBtn = document.createElement('button');
+  continueBtn.className = 'qs-continue';
+  continueBtn.id = 'qsContinue';
+  continueBtn.textContent = t.qsContinue;
+  continueBtn.addEventListener('click', () => {
+    if(!selectedType) return;
+    const composed = selectedZone
+      ? `${selectedType}, ${t.connector} ${selectedZone}.`
+      : `${selectedType}.`;
+    panel.remove();
+    quickStartActive = false;
+    history.push({ role: "user", content: composed });
+    addMessage('user', composed);
+    callClaude();
+  });
+  panel.appendChild(continueBtn);
+
+  chatEl.appendChild(panel);
+  chatEl.scrollTop = chatEl.scrollHeight;
+}
+
+function updateContinueState(){
+  const btn = document.getElementById('qsContinue');
+  if(!btn) return;
+  if(selectedType) btn.classList.add('enabled');
+  else btn.classList.remove('enabled');
+}
+
+// ---- Voice dictation (Web Speech API) ----
+const micBtn = document.getElementById('micBtn');
+const micHintEl = document.getElementById('micHint');
+const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+let recognition = null;
+let isRecording = false;
+let baseText = '';
+
+if(SpeechRecognitionAPI){
+  micBtn.style.display = 'flex';
+  micHintEl.style.display = 'none';
+
+  recognition = new SpeechRecognitionAPI();
+  recognition.continuous = true;
+  recognition.interimResults = true;
+
+  recognition.onresult = (event) => {
+    let interim = '';
+    let final = '';
+    for(let i = event.resultIndex; i < event.results.length; i++){
+      const transcript = event.results[i][0].transcript;
+      if(event.results[i].isFinal) final += transcript;
+      else interim += transcript;
+    }
+    if(final) baseText += final;
+    inputEl.value = (baseText + interim).trim();
+    inputEl.style.height = 'auto';
+    inputEl.style.height = Math.min(inputEl.scrollHeight, 120) + 'px';
+  };
+
+  recognition.onerror = () => {
+    isRecording = false;
+    micBtn.classList.remove('recording');
+  };
+
+  recognition.onend = () => {
+    isRecording = false;
+    micBtn.classList.remove('recording');
+  };
+
+  micBtn.addEventListener('click', () => {
+    if(isRecording){
+      recognition.stop();
+      isRecording = false;
+      micBtn.classList.remove('recording');
+    }else{
+      recognition.lang = T[LANG].recogLang;
+      baseText = inputEl.value ? inputEl.value + ' ' : '';
+      try{
+        recognition.start();
+        isRecording = true;
+        micBtn.classList.add('recording');
+      }catch(e){ /* already started, ignore */ }
+    }
+  });
+}
+
+// ---- Language toggle ----
+const langButtons = document.querySelectorAll('.lang-toggle button');
+
+function applyStaticText(){
+  const t = T[LANG];
+  headlineEl.textContent = t.headline;
+  sublineEl.textContent = t.subline;
+  footerEl.textContent = t.footer;
+  inputEl.placeholder = t.inputPlaceholder;
+  micHintText.textContent = t.micHint;
+  draftLabelEl.textContent = t.draftLabel;
+  if(latestDraft){
+    copyDraftBtn.textContent = t.copyBtn;
+    copyDraftBtn.classList.remove('copied');
+  }
+  goReviewBtn.textContent = t.goBtn;
+  htmlEl.setAttribute('lang', t.htmlLang);
+  langButtons.forEach(b => b.classList.toggle('active', b.dataset.lang === LANG));
+}
+
+function setLanguage(newLang){
+  if(newLang === LANG) return;
+  const conversationStarted = history.some(m => m.role === 'user');
+  LANG = newLang;
+  applyStaticText();
+
+  if(!conversationStarted){
+    chatEl.innerHTML = '';
+    history = [];
+    selectedType = null;
+    selectedZone = null;
+    otherPath = false;
+    const g = T[LANG].greeting;
+    history.push({ role: "assistant", content: g });
+    addMessage('assistant', g);
+    renderQuickStart();
+  }else{
+    const note = document.createElement('div');
+    note.className = 'msg system-note';
+    note.textContent = T[LANG].switchNote;
+    chatEl.appendChild(note);
+    chatEl.scrollTop = chatEl.scrollHeight;
+    if(quickStartActive){
+      const existing = document.getElementById('quickStart');
+      if(existing) existing.remove();
+      selectedType = null;
+      selectedZone = null;
+      renderQuickStart();
+    }
+  }
+  inputEl.focus();
+}
+
+langButtons.forEach(btn => {
+  btn.addEventListener('click', () => setLanguage(btn.dataset.lang));
+});
+
+// ---- Init ----
+applyStaticText();
+history.push({ role: "assistant", content: T[LANG].greeting });
+addMessage('assistant', T[LANG].greeting);
+renderQuickStart();
+inputEl.focus();
+</script>
+
+</body>
+</html>
