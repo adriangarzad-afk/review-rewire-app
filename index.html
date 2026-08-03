@@ -30,6 +30,10 @@
     display:flex;
     justify-content:center;
     height:var(--app-height, 100vh);
+    position:fixed;
+    left:0;
+    width:100%;
+    top:0;
   }
   .app{
     width:100%;
@@ -642,8 +646,16 @@
 // with JS and keep it in sync, so the whole layout (header, chat, input bar)
 // always fits what's really visible.
 function setAppHeight(){
-  const h = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
+  const vv = window.visualViewport;
+  const h = (vv && vv.height) || window.innerHeight;
   document.documentElement.style.setProperty('--app-height', h + 'px');
+  if(vv){
+    // iOS pans the visual viewport to bring the focused input into view
+    // without telling the page's layout. We move the body to match that
+    // pan exactly, so nothing drifts or leaves a gap.
+    document.body.style.top = vv.offsetTop + 'px';
+    document.body.style.left = vv.offsetLeft + 'px';
+  }
 }
 setAppHeight();
 window.addEventListener('resize', setAppHeight);
