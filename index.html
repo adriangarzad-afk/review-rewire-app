@@ -76,6 +76,107 @@
     max-width:420px;
     position:relative;
   }
+
+  /* Gate screen */
+  .app{
+    position:relative;
+  }
+  .gate{
+    position:absolute;
+    inset:0;
+    z-index:10;
+    background:var(--white);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    overflow-y:auto;
+  }
+  .gate-inner{
+    padding:32px 24px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+    gap:14px;
+  }
+  .gate-inner .lang-toggle{
+    position:static;
+    margin-bottom:4px;
+  }
+  .gate-inner .headline{
+    font-size:24px;
+  }
+  .gate-inner .subline{
+    max-width:360px;
+  }
+  .gate-google-card{
+    width:100%;
+    max-width:380px;
+    background:var(--gray-bg);
+    border:1px solid var(--gray-light);
+    border-radius:14px;
+    padding:18px;
+    margin-top:6px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:12px;
+  }
+  .gate-google-text{
+    font-size:13.5px;
+    line-height:1.45;
+    color:var(--black);
+    font-weight:600;
+  }
+  .gate-google-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
+    width:100%;
+    background:#fff;
+    border:1.5px solid var(--gray-light);
+    border-radius:10px;
+    padding:11px 16px;
+    font-size:14px;
+    font-weight:600;
+    font-family:inherit;
+    color:var(--black);
+    cursor:pointer;
+    transition:transform 0.12s ease, border-color 0.15s ease;
+  }
+  .gate-google-btn:hover{ border-color:var(--gray-main); }
+  .gate-google-btn:active{ transform:scale(0.98); }
+  .gate-google-hint{
+    font-size:11.5px;
+    color:var(--gray-mid);
+    line-height:1.4;
+  }
+  .gate-continue-btn{
+    margin-top:8px;
+    background:var(--red);
+    color:#fff;
+    border:none;
+    border-radius:22px;
+    padding:14px 28px;
+    font-size:15px;
+    font-weight:700;
+    font-family:inherit;
+    cursor:pointer;
+    transition:transform 0.12s ease, background 0.15s ease;
+    width:100%;
+    max-width:380px;
+  }
+  .gate-continue-btn:active{ transform:scale(0.98); }
+
+  .main-app{
+    display:flex;
+    flex-direction:column;
+    height:100%;
+    opacity:0;
+    transition:opacity 0.25s ease;
+  }
+  .main-app.visible{ opacity:1; }
   .lang-toggle{
     position:absolute;
     top:20px; right:20px;
@@ -378,46 +479,74 @@
 <body>
 
 <div class="app">
-  <div class="header">
-    <div class="lang-toggle">
-      <button data-lang="es" class="active">ES</button>
-      <button data-lang="en">EN</button>
-    </div>
-    <div class="headline" id="headlineText">Asistente para escribir tu review</div>
-    <div class="subline" id="sublineText">Cuéntame cómo fue trabajar con Adrián Garza-Delgado y te ayudo a poner tu experiencia en palabras claras. Al final, tú decides qué se publica.</div>
-    <div class="google-reminder" id="googleReminder">📌 Antes de empezar: asegúrate de tener sesión iniciada en tu cuenta de Google — la vas a necesitar para publicar al final.</div>
-  </div>
 
-  <div class="chat" id="chat"></div>
+  <!-- GATE SCREEN: language + Google check, shown before entering the chat -->
+  <div class="gate" id="gateScreen">
+    <div class="gate-inner">
+      <div class="lang-toggle gate-lang-toggle">
+        <button data-lang="es" class="active">ES</button>
+        <button data-lang="en">EN</button>
+      </div>
+      <div class="headline" id="gateHeadlineText">Asistente para escribir tu review</div>
+      <div class="subline" id="gateSublineText">Cuéntame cómo fue trabajar con Adrián Garza-Delgado y te ayudo a poner tu experiencia en palabras claras. Al final, tú decides qué se publica.</div>
 
-  <div class="draft-bar" id="draftBar" style="display:none;">
-    <span class="draft-bar-label" id="draftLabelText">✓ Tu reseña está lista</span>
-    <div class="draft-bar-actions">
-      <button class="draft-btn draft-btn-copy" id="copyDraftBtn">Copiar reseña</button>
-      <button class="draft-btn draft-btn-go" id="goReviewBtn">Ir a publicarla →</button>
-    </div>
-  </div>
+      <div class="gate-google-card">
+        <div class="gate-google-text" id="gateReminderText">📌 Antes de empezar: asegúrate de tener sesión iniciada en tu cuenta de Google — la vas a necesitar para publicar al final.</div>
+        <button class="gate-google-btn" id="openGoogleBtn">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          <span id="openGoogleBtnText">Abrir mi cuenta de Google</span>
+        </button>
+        <div class="gate-google-hint" id="gateGoogleHint">Si ves tu foto de perfil, ya tienes sesión iniciada. Si no, inicia sesión ahí y regresa aquí.</div>
+      </div>
 
-  <div class="inputbar">
-    <div class="input-row">
-      <textarea id="input" rows="1" placeholder="Escribe aquí…"></textarea>
-      <button class="mic-btn" id="micBtn" aria-label="Dictar" style="display:none;">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/>
-        </svg>
-      </button>
-      <button class="send-btn" id="sendBtn" aria-label="Enviar">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-          <path d="M4 12L20 4L14 20L11 13L4 12Z" fill="currentColor"/>
-        </svg>
+      <button class="gate-continue-btn" id="continueToChatBtn">
+        <span id="continueBtnText">Ya inicié sesión — continuar</span>
       </button>
     </div>
-    <div class="mic-hint" id="micHint">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg>
-      <span id="micHintText">Toca el micrófono y dicta — es más rápido</span>
-    </div>
   </div>
-  <div class="footer-credit" id="footerText">Tus palabras, tu reseña — tú das clic en publicar</div>
+
+  <!-- MAIN CHAT SCREEN -->
+  <div class="main-app" id="mainApp">
+    <div class="header">
+      <div class="lang-toggle">
+        <button data-lang="es" class="active">ES</button>
+        <button data-lang="en">EN</button>
+      </div>
+      <div class="headline" id="headlineText">Asistente para escribir tu review</div>
+      <div class="subline" id="sublineText">Cuéntame cómo fue trabajar con Adrián Garza-Delgado y te ayudo a poner tu experiencia en palabras claras. Al final, tú decides qué se publica.</div>
+    </div>
+
+    <div class="chat" id="chat"></div>
+
+    <div class="draft-bar" id="draftBar" style="display:none;">
+      <span class="draft-bar-label" id="draftLabelText">✓ Tu reseña está lista</span>
+      <div class="draft-bar-actions">
+        <button class="draft-btn draft-btn-copy" id="copyDraftBtn">Copiar reseña</button>
+        <button class="draft-btn draft-btn-go" id="goReviewBtn">Ir a publicarla →</button>
+      </div>
+    </div>
+
+    <div class="inputbar">
+      <div class="input-row">
+        <textarea id="input" rows="1" placeholder="Escribe aquí…"></textarea>
+        <button class="mic-btn" id="micBtn" aria-label="Dictar" style="display:none;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4M8 23h8"/>
+          </svg>
+        </button>
+        <button class="send-btn" id="sendBtn" aria-label="Enviar">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <path d="M4 12L20 4L14 20L11 13L4 12Z" fill="currentColor"/>
+          </svg>
+        </button>
+      </div>
+      <div class="mic-hint" id="micHint">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v4"/></svg>
+        <span id="micHintText">Toca el micrófono y dicta — es más rápido</span>
+      </div>
+    </div>
+    <div class="footer-credit" id="footerText">Tus palabras, tu reseña — tú das clic en publicar</div>
+  </div>
 </div>
 
 <script>
@@ -469,6 +598,9 @@ const T = {
     errorConn: "Perdón, hubo un problema de conexión. ¿Puedes intentar mandar tu mensaje otra vez?",
     switchNote: "Cambiaste a español — seguimos desde aquí.",
     reminder: "📌 Antes de empezar: asegúrate de tener sesión iniciada en tu cuenta de Google — la vas a necesitar para publicar al final.",
+    gateGoogleBtn: "Abrir mi cuenta de Google",
+    gateGoogleHint: "Si ves tu foto de perfil, ya tienes sesión iniciada. Si no, inicia sesión ahí y regresa aquí.",
+    gateContinue: "Ya inicié sesión — continuar",
     recogLang: "es-MX",
     htmlLang: "es"
   },
@@ -496,6 +628,9 @@ const T = {
     errorConn: "Sorry, there was a connection issue. Can you try sending that again?",
     switchNote: "Switched to English — picking up from here.",
     reminder: "📌 Before you start: make sure you're signed into your Google account — you'll need it to post at the end.",
+    gateGoogleBtn: "Open my Google account",
+    gateGoogleHint: "If you see your profile photo there, you're already signed in. If not, sign in and come back here.",
+    gateContinue: "I'm signed in — continue",
     recogLang: "en-US",
     htmlLang: "en"
   }
@@ -586,7 +721,16 @@ const sendBtn = document.getElementById('sendBtn');
 const headlineEl = document.getElementById('headlineText');
 const sublineEl = document.getElementById('sublineText');
 const footerEl = document.getElementById('footerText');
-const googleReminderEl = document.getElementById('googleReminder');
+const gateScreen = document.getElementById('gateScreen');
+const mainApp = document.getElementById('mainApp');
+const gateHeadlineEl = document.getElementById('gateHeadlineText');
+const gateSublineEl = document.getElementById('gateSublineText');
+const gateReminderEl = document.getElementById('gateReminderText');
+const openGoogleBtnTextEl = document.getElementById('openGoogleBtnText');
+const gateGoogleHintEl = document.getElementById('gateGoogleHint');
+const continueBtnTextEl = document.getElementById('continueBtnText');
+const openGoogleBtn = document.getElementById('openGoogleBtn');
+const continueToChatBtn = document.getElementById('continueToChatBtn');
 const micHintText = document.getElementById('micHintText');
 const htmlEl = document.documentElement;
 
@@ -884,7 +1028,12 @@ function applyStaticText(){
   const t = T[LANG];
   headlineEl.textContent = t.headline;
   sublineEl.textContent = t.subline;
-  googleReminderEl.textContent = t.reminder;
+  gateHeadlineEl.textContent = t.headline;
+  gateSublineEl.textContent = t.subline;
+  gateReminderEl.textContent = t.reminder;
+  openGoogleBtnTextEl.textContent = t.gateGoogleBtn;
+  gateGoogleHintEl.textContent = t.gateGoogleHint;
+  continueBtnTextEl.textContent = t.gateContinue;
   footerEl.textContent = t.footer;
   inputEl.placeholder = t.inputPlaceholder;
   micHintText.textContent = t.micHint;
@@ -903,6 +1052,11 @@ function setLanguage(newLang){
   const conversationStarted = history.some(m => m.role === 'user');
   LANG = newLang;
   applyStaticText();
+
+  if(!chatStarted){
+    // Still on the welcome screen — nothing to reset yet, just update the labels.
+    return;
+  }
 
   if(!conversationStarted){
     chatEl.innerHTML = '';
@@ -935,12 +1089,26 @@ langButtons.forEach(btn => {
   btn.addEventListener('click', () => setLanguage(btn.dataset.lang));
 });
 
+openGoogleBtn.addEventListener('click', () => {
+  window.open('https://myaccount.google.com/', '_blank', 'noopener');
+});
+
+let chatStarted = false;
+function enterChat(){
+  if(chatStarted) return;
+  chatStarted = true;
+  gateScreen.style.display = 'none';
+  mainApp.classList.add('visible');
+  history.push({ role: "assistant", content: T[LANG].greeting });
+  addMessage('assistant', T[LANG].greeting);
+  renderQuickStart();
+  inputEl.focus();
+}
+
+continueToChatBtn.addEventListener('click', enterChat);
+
 // ---- Init ----
 applyStaticText();
-history.push({ role: "assistant", content: T[LANG].greeting });
-addMessage('assistant', T[LANG].greeting);
-renderQuickStart();
-inputEl.focus();
 </script>
 
 </body>
