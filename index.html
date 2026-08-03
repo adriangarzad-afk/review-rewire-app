@@ -49,6 +49,16 @@
     border-bottom:1px solid var(--gray-light);
     position:relative;
   }
+  .header-compact{
+    padding:14px 24px 12px;
+  }
+  .header-compact .subline{
+    display:none;
+  }
+  .header-compact .headline{
+    font-size:16px;
+    padding-right:110px;
+  }
   .headline{
     font-weight:700;
     font-size:24px;
@@ -583,7 +593,7 @@
 
   <!-- MAIN CHAT SCREEN -->
   <div class="main-app" id="mainApp">
-    <div class="header">
+    <div class="header header-compact">
       <div class="lang-toggle">
         <button data-lang="es" class="active">ES</button>
         <button data-lang="en">EN</button>
