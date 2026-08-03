@@ -29,16 +29,14 @@
     color:var(--black);
     display:flex;
     justify-content:center;
-    height:100vh;
-    height:100dvh;
+    height:var(--app-height, 100vh);
   }
   .app{
     width:100%;
     max-width:520px;
     display:flex;
     flex-direction:column;
-    height:100vh;
-    height:100dvh;
+    height:var(--app-height, 100vh);
     overflow:hidden;
     background:var(--white);
     border-top:3px solid var(--red);
@@ -423,6 +421,23 @@
 </div>
 
 <script>
+// --- Real viewport height fix (iOS keyboard) ---
+// iOS Safari doesn't reliably shrink 100vh/100dvh when the keyboard opens,
+// which cuts off part of the screen. We measure the actual visible height
+// with JS and keep it in sync, so the whole layout (header, chat, input bar)
+// always fits what's really visible.
+function setAppHeight(){
+  const h = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
+  document.documentElement.style.setProperty('--app-height', h + 'px');
+}
+setAppHeight();
+window.addEventListener('resize', setAppHeight);
+window.addEventListener('orientationchange', setAppHeight);
+if(window.visualViewport){
+  window.visualViewport.addEventListener('resize', setAppHeight);
+  window.visualViewport.addEventListener('scroll', setAppHeight);
+}
+
 const AGENT_NAME = "Adrián Garza-Delgado";
 const AGENT_ROLE = "Broker Asociado";
 const AREAS_SERVED = "San Antonio y Bexar, Comal, Kendall y Guadalupe — incluyendo zonas como Stone Oak, The Dominion y Shavano Park";
