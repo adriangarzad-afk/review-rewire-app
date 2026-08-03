@@ -680,8 +680,8 @@ const T = {
     qsTypeLabel: "¿Qué hiciste con Adrián?",
     qsZoneLabel: "¿En qué zona? (opcional)",
     qsContinue: "Continuar →",
-    types: { compre: "Compré", vende: "Vendí", rento: "Renté", admin: "Administración", otro: "Otro" },
-    composeType: { compre: "Compré una propiedad", vende: "Vendí mi propiedad", rento: "Renté una propiedad", admin: "Uso el servicio de administración de propiedades" },
+    types: { compre: "Compré", vende: "Vendí", rento: "Renté", admin: "Administración", otro: "Otro", conozco: "Lo Conozco" },
+    composeType: { compre: "Compré una propiedad", vende: "Vendí mi propiedad", rento: "Renté una propiedad", admin: "Uso el servicio de administración de propiedades", conozco: "Conozco a Adrián personalmente, no fue por una transacción de bienes raíces" },
     connector: "en",
     zoneOther: "Otra zona",
     otherPlaceholder: "Cuéntame quién eres y cómo conociste a Adrián…",
@@ -712,8 +712,8 @@ const T = {
     qsTypeLabel: "What did you do with Adrián?",
     qsZoneLabel: "Which area? (optional)",
     qsContinue: "Continue →",
-    types: { compre: "Bought", vende: "Sold", rento: "Rented", admin: "Property Mgmt", otro: "Other" },
-    composeType: { compre: "I bought a property", vende: "I sold my property", rento: "I rented a property", admin: "I use his property management service" },
+    types: { compre: "Bought", vende: "Sold", rento: "Rented", admin: "Property Mgmt", otro: "Other", conozco: "I Know Him" },
+    composeType: { compre: "I bought a property", vende: "I sold my property", rento: "I rented a property", admin: "I use his property management service", conozco: "I know Adrián personally, it wasn't through a real estate transaction" },
     connector: "in",
     zoneOther: "Other area",
     otherPlaceholder: "Tell me who you are and how you know Adrián…",
@@ -987,7 +987,8 @@ function renderQuickStart(){
     { key: 'vende', label: t.types.vende },
     { key: 'rento', label: t.types.rento },
     { key: 'admin', label: t.types.admin },
-    { key: 'otro', label: t.types.otro, other: true }
+    { key: 'otro', label: t.types.otro, other: true },
+    { key: 'conozco', label: t.types.conozco }
   ];
   typeEntries.forEach(pt => {
     const btn = document.createElement('button');
@@ -1188,7 +1189,6 @@ function setLanguage(newLang){
       renderQuickStart();
     }
   }
-  inputEl.focus();
 }
 
 langButtons.forEach(btn => {
@@ -1286,7 +1286,6 @@ function enterChat(){
   history.push({ role: "assistant", content: T[LANG].greeting });
   addMessage('assistant', T[LANG].greeting);
   renderQuickStart();
-  inputEl.focus();
 }
 
 continueToChatBtn.addEventListener('click', enterChat);
