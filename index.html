@@ -3,20 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
-<title>Review para Adrián Garza-Delgado</title>
-<!-- Open Graph / vista previa al compartir el link -->
-<meta property="og:type" content="website">
-<meta property="og:url" content="https://review-rewire-app.vercel.app/">
-<meta property="og:title" content="Asistente para escribir tu review — Adrián Garza-Delgado">
-<meta property="og:description" content="Cuéntame cómo fue trabajar conmigo y te ayudo a escribir tu review de Google en tus propias palabras.">
-<meta property="og:image" content="https://review-rewire-app.vercel.app/og-image.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:locale" content="es_ES">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Asistente para escribir tu review — Adrián Garza-Delgado">
-<meta name="twitter:description" content="Cuéntame cómo fue trabajar conmigo y te ayudo a escribir tu review de Google en tus propias palabras.">
-<meta name="twitter:image" content="https://review-rewire-app.vercel.app/og-image.png">
+<title>Reseña para Adrián Garza-Delgado</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
@@ -31,7 +18,10 @@
     --red-deep:#A30119;
   }
   *{box-sizing:border-box;}
-  html,body{height:100%;}
+  html,body{
+    height:100%;
+    overflow:hidden;
+  }
   body{
     margin:0;
     background:var(--gray-bg);
@@ -39,14 +29,17 @@
     color:var(--black);
     display:flex;
     justify-content:center;
-    min-height:100vh;
+    height:100vh;
+    height:100dvh;
   }
   .app{
     width:100%;
     max-width:520px;
     display:flex;
     flex-direction:column;
-    min-height:100vh;
+    height:100vh;
+    height:100dvh;
+    overflow:hidden;
     background:var(--white);
     border-top:3px solid var(--red);
     box-shadow:0 0 60px rgba(0,0,0,0.06);
@@ -72,6 +65,18 @@
     line-height:1.5;
     position:relative;
     max-width:420px;
+  }
+  .google-reminder{
+    margin-top:12px;
+    background:var(--gray-bg);
+    border:1px solid var(--gray-light);
+    border-radius:10px;
+    padding:9px 12px;
+    font-size:12px;
+    line-height:1.4;
+    color:var(--gray-mid);
+    max-width:420px;
+    position:relative;
   }
   .lang-toggle{
     position:absolute;
@@ -104,7 +109,9 @@
   /* Chat */
   .chat{
     flex:1;
+    min-height:0;
     overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
     padding:20px 20px 8px;
     display:flex;
     flex-direction:column;
@@ -380,6 +387,7 @@
     </div>
     <div class="headline" id="headlineText">Asistente para escribir tu review</div>
     <div class="subline" id="sublineText">Cuéntame cómo fue trabajar con Adrián Garza-Delgado y te ayudo a poner tu experiencia en palabras claras. Al final, tú decides qué se publica.</div>
+    <div class="google-reminder" id="googleReminder">📌 Antes de empezar: asegúrate de tener sesión iniciada en tu cuenta de Google — la vas a necesitar para publicar al final.</div>
   </div>
 
   <div class="chat" id="chat"></div>
@@ -445,6 +453,7 @@ const T = {
     errorTech: "Perdón, hubo un problema técnico. ¿Puedes intentar de nuevo?",
     errorConn: "Perdón, hubo un problema de conexión. ¿Puedes intentar mandar tu mensaje otra vez?",
     switchNote: "Cambiaste a español — seguimos desde aquí.",
+    reminder: "📌 Antes de empezar: asegúrate de tener sesión iniciada en tu cuenta de Google — la vas a necesitar para publicar al final.",
     recogLang: "es-MX",
     htmlLang: "es"
   },
@@ -471,12 +480,17 @@ const T = {
     errorTech: "Sorry, something went wrong on my end. Can you try again?",
     errorConn: "Sorry, there was a connection issue. Can you try sending that again?",
     switchNote: "Switched to English — picking up from here.",
+    reminder: "📌 Before you start: make sure you're signed into your Google account — you'll need it to post at the end.",
     recogLang: "en-US",
     htmlLang: "en"
   }
 };
 
-let LANG = 'es';
+function detectDefaultLang(){
+  const raw = (navigator.language || (navigator.languages && navigator.languages[0]) || 'es').toLowerCase();
+  return raw.startsWith('es') ? 'es' : 'en';
+}
+let LANG = detectDefaultLang();
 
 function buildSystemPrompt(lang, otherPath){
   const langLine = lang === 'es'
@@ -557,6 +571,7 @@ const sendBtn = document.getElementById('sendBtn');
 const headlineEl = document.getElementById('headlineText');
 const sublineEl = document.getElementById('sublineText');
 const footerEl = document.getElementById('footerText');
+const googleReminderEl = document.getElementById('googleReminder');
 const micHintText = document.getElementById('micHintText');
 const htmlEl = document.documentElement;
 
@@ -854,6 +869,7 @@ function applyStaticText(){
   const t = T[LANG];
   headlineEl.textContent = t.headline;
   sublineEl.textContent = t.subline;
+  googleReminderEl.textContent = t.reminder;
   footerEl.textContent = t.footer;
   inputEl.placeholder = t.inputPlaceholder;
   micHintText.textContent = t.micHint;
